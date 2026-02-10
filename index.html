@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuSave Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header { 
+            background: #c8102e;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .logo { 
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        .stats { 
+            display: flex;
+            gap: 32px;
+        }
+        
+        .stat { 
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+        
+        .stat-value { 
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        /* Panels */
+        .panel { 
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            padding: 48px;
+            margin-bottom: 24px;
+        }
+        
+        .panel h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        
+        .panel p.subtitle {
+            color: #888;
+            margin-bottom: 32px;
+        }
+        
+        /* Day Buttons */
+        .day-buttons { 
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .day-btn { 
+            padding: 24px 48px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 1px solid #333;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .day-btn:hover { 
+            background: #c8102e;
+            border-color: #c8102e;
+        }
+        
+        .day-btn small {
+            display: block;
+            margin-top: 8px;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+        
+        /* Form */
+        .form-group { 
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        .form-group label { 
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .form-group input { 
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #333;
+            background: #0a0a0a;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #c8102e;
+        }
+        
+        /* Buttons */
+        .btn { 
+            padding: 16px 48px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: #c8102e;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+        
+        .btn:hover { 
+            background: #a00d25;
+        }
+        
+        /* Answers */
+        .answer-btn { 
+            display: block;
+            width: 100%;
+            padding: 20px 24px;
+            margin: 12px 0;
+            font-size: 1rem;
+            border: 1px solid #333;
+            background: #0a0a0a;
+            color: #fff;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .answer-btn:hover { 
+            border-color: #c8102e;
+        }
+        
+        .answer-btn.correct { 
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .answer-btn.wrong { 
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Feedback */
+        .feedback { 
+            margin-top: 32px;
+            padding: 24px;
+            border: 1px solid #333;
+        }
+        
+        .feedback.correct { 
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.05);
+        }
+        
+        .feedback.wrong { 
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        /* Category */
+        .category { 
+            display: inline-block;
+            padding: 6px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 24px;
+            color: #c8102e;
+        }
+        
+        .question { 
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+        
+        /* Progress */
+        .progress { 
+            height: 2px;
+            background: #222;
+            margin-bottom: 40px;
+        }
+        
+        .progress-bar { 
+            height: 100%;
+            background: #c8102e;
+            transition: width 0.3s;
+        }
+        
+        /* Result */
+        .result-score { 
+            font-size: 4rem;
+            font-weight: 700;
+            color: #c8102e;
+            margin: 24px 0;
+            letter-spacing: -0.02em;
+        }
+        
+        .result-message {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 16px;
+        }
+        
+        .error { 
+            color: #ef4444;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        
+        /* Rangliste */
+        .rangliste-panel {
+            position: fixed;
+            right: 24px;
+            top: 100px;
+            width: 280px;
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            padding: 24px;
+        }
+        
+        .rangliste-panel h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #c8102e;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .rang-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+            font-size: 0.9rem;
+        }
+        
+        .rang-item:last-child {
+            border-bottom: none;
+        }
+        
+        .rang-item .rank {
+            color: #666;
+            width: 24px;
+        }
+        
+        .rang-item .name {
+            flex: 1;
+        }
+        
+        .rang-item .points {
+            color: #c8102e;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 1300px) {
+            .rangliste-panel { display: none; }
+        }
+        
+        /* Timer Circle */
+        .timer-container {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .timer-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: relative;
+            background: #1a1a1a;
+        }
+        
+        .timer-circle svg {
+            transform: rotate(-90deg);
+            width: 80px;
+            height: 80px;
+        }
+        
+        .timer-circle .bg {
+            fill: none;
+            stroke: #333;
+            stroke-width: 6;
+        }
+        
+        .timer-circle .progress {
+            fill: none;
+            stroke: #22c55e;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 226;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+        }
+        
+        .timer-circle .progress.warning {
+            stroke: #f59e0b;
+        }
+        
+        .timer-circle .progress.danger {
+            stroke: #ef4444;
+        }
+        
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        /* Question container needs relative positioning */
+        .question-container {
+            position: relative;
+        }
+        
+        /* Form container */
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">docusave</div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Punkte</div>
+                    <div class="stat-value" id="score">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Frage</div>
+                    <div class="stat-value"><span id="qnum">0</span>/<span id="qtotal">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rangliste Sidebar -->
+        <div class="rangliste-panel" id="rangliste-panel">
+            <h3>Top 10</h3>
+            <div id="rangliste"><p style="color:#666;">Laden...</p></div>
+        </div>
+
+        <!-- SCREEN 1: Tag wählen -->
+        <div class="panel" id="screen1" style="text-align:center;">
+            <h2>Quiz</h2>
+            <p class="subtitle">Testen Sie Ihr Wissen rund um Dokumentenschutz</p>
+            <div class="day-buttons">
+                <button class="day-btn" onclick="pickDay(1)">Tag 1<small>20 Fragen</small></button>
+                <button class="day-btn" onclick="pickDay(2)">Tag 2<small>20 Fragen</small></button>
+                <button class="day-btn" onclick="pickDay(3)">Tag 3<small>20 Fragen</small></button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Registrierung -->
+        <div class="panel hidden" id="screen2" style="text-align:center;">
+            <h2>Registrierung</h2>
+            <p class="subtitle">Bitte füllen Sie alle Felder aus</p>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>Vorname</label>
+                    <input type="text" id="fname" placeholder="Vorname">
+                </div>
+                <div class="form-group">
+                    <label>Nachname</label>
+                    <input type="text" id="lname" placeholder="Nachname">
+                </div>
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="email" placeholder="ihre@email.ch">
+                </div>
+                <div class="error hidden" id="error"></div>
+                <button class="btn" onclick="startQuiz()" style="width:100%; margin-top:16px;">Quiz starten</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Frage -->
+        <div class="panel hidden" id="screen3">
+            <div class="question-container">
+                <div class="timer-container">
+                    <div class="timer-circle">
+                        <svg viewBox="0 0 80 80">
+                            <circle class="bg" cx="40" cy="40" r="36"/>
+                            <circle class="progress" id="timer-progress" cx="40" cy="40" r="36"/>
+                        </svg>
+                        <div class="timer-text" id="timer-text">0</div>
+                    </div>
+                </div>
+                <div class="progress"><div class="progress-bar" id="progressbar"></div></div>
+                <div class="category" id="cat"></div>
+                <div class="question" id="questiontext"></div>
+                <div id="answers"></div>
+                <div class="feedback hidden" id="feedback">
+                    <p id="feedbacktext"></p>
+                    <button class="btn" onclick="nextQ()" style="margin-top:16px;">Weiter</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: Ergebnis -->
+        <div class="panel hidden" id="screen4" style="text-align:center;">
+            <h2>Quiz beendet</h2>
+            <div class="result-score" id="finalscore">0</div>
+            <p class="result-message" id="finalmsg"></p>
+            <p style="color:#666; margin-top:24px;">Vielen Dank für Ihre Teilnahme.</p>
+        </div>
+    </div>
+
+<script>
+// FRAGEN TAG 1 - 20 Fragen, Schwierigkeit 1-10
+const day1 = [
+    { cat: "Leicht", q: "Was mögen Archivalien in der Regel am liebsten?", a: ["Überraschungen", "Stabilität", "Häufige Abwechslung"], c: 1, d: 1 },
+    { cat: "Leicht", q: "Was ist der natürliche Feind jedes Archivs?", a: ["Kaffee", "Wasser", "Dunkelheit"], c: 1, d: 1 },
+    { cat: "Leicht", q: "Was ist das docusave RescueKit Wasser?", a: ["Ein Notfallpaket für Bergung und Verpackung bei Wasserschäden", "Ein digitales Archivsystem", "Ein Reparaturset für Bücher"], c: 0, d: 1 },
+    { cat: "RescueKit", q: "Welche Komponente ist Bestandteil des RescueKits Wasser?", a: ["Persönliche Schutzausrüstung", "Luftentfeuchter und Ventilatoren", "docusave Verpackungskisten bis max. DIN-A3-Format"], c: 2, d: 1 },
+    { cat: "RescueKit", q: "Warum ist die Einbettung des RescueKits Wasser in das docusave-Gesamtsystem präventiv und organisatorisch relevant?", a: ["Weil dadurch externe Dienstleister ausgeschlossen werden", "Weil ein strukturierter, reibungsloser Übergang von der Bergung in die Wiederherstellungsphase gewährleistet wird", "Weil dadurch keine weiteren Entscheidungen im Schadensfall nötig sind"], c: 1, d: 2 },
+    { cat: "RescueKit", q: "Für welchen Umfang ist der Inhalt eines RescueKits Wasser ausgelegt?", a: ["Für das Verpacken von bis zu 50 Laufmeter trockener oder wassergeschädigter Dokumente", "Für das Verpacken einzelner geschädigter Objekte", "Für den vollständigen Inhalt eines durchschnittlichen Archivraums"], c: 0, d: 2 },
+    { cat: "RescueKit", q: "Welcher Vorteil steht beim Einsatz des RescueKits Wasser im Ernstfall im Vordergrund?", a: ["Die vollständige Wiederherstellung des Bestandes ohne externe Unterstützung", "Die Reduktion administrativer Aufgaben nach Abschluss der Bergung", "Die sofortige Handlungsfähigkeit durch verfügbares, einsatzerprobtes Notfallmaterial"], c: 2, d: 3 },
+    { cat: "RescueKit", q: "Warum ist der rasche Zugriff auf das RescueKit Wasser im Schadensfall entscheidend?", a: ["Weil geeignete Materialien und Verpackungstechniken Folgeschäden bei Bergung und Transport reduzieren", "Weil nur in den ersten Stunden mikrobiologische Analysen möglich sind", "Weil das Verpackungsmaterial des RescueKits nur unmittelbar nach einem Wasserschaden einsetzbar ist"], c: 0, d: 3 },
+    { cat: "Notfallkonzept", q: "Welcher Bergungsgrundsatz ist korrekt?", a: ["Je mehr Personen an der Bergung beteiligt sind, desto schneller und sicherer kann das Material bewegt werden", "Je kürzer die Wege und je weniger Personen das Material in die Hand nehmen müssen, desto besser", "Längere Transportwege innerhalb des Gebäudes sind unproblematisch, solange das Material mehrfach umgepackt wird"], c: 1, d: 3 },
+    { cat: "Prävention", q: "Welche Aussage ist fachlich korrekt?", a: ["Raue Oberflächen in Archivräumen sind pflegeleichter als glatte", "Glatte Wände, Decken und Böden reduzieren Staubablagerungen und erleichtern die Reinigung", "Die Wahl der Oberflächenmaterialien beeinflusst primär die Raumästhetik und spielt für die Prävention eine untergeordnete Rolle"], c: 1, d: 4 },
+    { cat: "Klima", q: "Welche Aussage entspricht präventiven Empfehlungen?", a: ["Fenster verbessern die Klimastabilität durch natürliche Lüftung", "Räume ohne Fenster oder Lichtschächte sind aus konservatorischer Sicht zu bevorzugen", "Fenster sollten möglichst gross dimensioniert sein, um den Bedarf an künstlichen Lichtquellen zu reduzieren"], c: 1, d: 4 },
+    { cat: "Klima", q: "Welche Aussage zum Einsatz von Luftentfeuchtungsgeräten trifft zu?", a: ["Luftentfeuchter ersetzen eine systematische Klimaüberwachung", "Der Dauerbetrieb von Luftentfeuchtern ist immer konservatorisch optimal", "Luftentfeuchter können sinnvoll sein, um Spitzenwerte abzufedern, müssen aber regelmässig kontrolliert werden"], c: 2, d: 5 },
+    { cat: "Klima", q: "Welche Massnahme gilt als bevorzugt zur Klimastabilisierung?", a: ["Permanente technische Vollklimatisierung aller Archivräume", "Passive Klimasteuerung durch Temperieren und kontrollierte Lüftung", "Ausschliesslicher Einsatz mobiler Entfeuchtungsgeräte"], c: 1, d: 5 },
+    { cat: "RescueKit", q: "Welche Funktion erfüllt das Inventarisierungstool (EIS) im Kontext des RescueKits?", a: ["Es ermöglicht eine digitale Dokumentation des Bestandes während der Bergung", "Es dient ausschliesslich der späteren Restaurierungsplanung", "Es dient primär der Schadenserfassung"], c: 0, d: 5 },
+    { cat: "Klima", q: "Welche Aussage zur Klimaaufzeichnung ist korrekt?", a: ["Stichprobenartige Messungen reichen für eine Klimabeurteilung aus", "Klimadaten lassen sich ohne Erfahrung eindeutig interpretieren", "Nur eine permanente Klimaaufzeichnung macht Schwankungen nachvollziehbar und bewertbar"], c: 2, d: 6 },
+    { cat: "Klima", q: "Welche Aussage zum Klima in Ausstellungsräumen ist korrekt?", a: ["Das Innenklima von Ausstellungsräumen ist unabhängig vom Aussenklima", "Das Klima richtet sich ausschliesslich nach der technischen Ausstattung des Ausstellungsgebäudes", "Museumsbesuchende beeinflussen das Raumklima durch Körperwärme und personenbedingte Feuchtigkeitsabgabe"], c: 2, d: 7 },
+    { cat: "Klima", q: "Welche Aussage zur Lichteinwirkung auf Ausstellungsobjekte ist korrekt?", a: ["Direkte Lichteinstrahlung, insbesondere UV-Strahlung, ist möglichst zu vermeiden", "Kurzwellige Strahlung ist für Archiv- und Museumsobjekte unproblematisch", "Bei einer kurzen Ausstellungsdauer ist eine hohe Beleuchtungsstärke unproblematisch"], c: 0, d: 7 },
+    { cat: "Klima", q: "Welche Aussage zur Klimastabilität ist korrekt?", a: ["Kurzfristige Schwankungen sind unproblematisch, solange die Jahresmittelwerte stimmen", "Besonders Schwankungen in kurzen Zeitintervallen sind aus konservatorischer Sicht kritisch", "Häufige Klimawechsel fördern die Anpassungsfähigkeit der Materialien"], c: 1, d: 8 },
+    { cat: "Schädlinge", q: "Wofür steht IPM?", a: ["Integrated Pest Management", "Integrated Preservation Maintenance", "Integrated Preventive Maintenance"], c: 0, d: 9 },
+    { cat: "Klima", q: "Welche Aussage beschreibt das Verhalten anorganischer Materialien korrekt?", a: ["Schäden an Metall, z.B. an Metallgestellen, entstehen ausschliesslich durch direkte Wassereinwirkung", "Anorganische Materialien sind gegenüber klimatischen Schwankungen grundsätzlich unempfindlich", "Auch anorganische Materialien können bei ungünstiger oder zu hoher Luftfeuchtigkeit Schaden nehmen"], c: 2, d: 10 }
+];
+
+// FRAGEN TAG 2 - 20 Fragen, Schwierigkeit 1-10
+const day2 = [
+    { cat: "Leicht", q: "Schimmelpilz wächst besonders gern im Archiv, wenn...", a: ["es trocken, sauber und kühl ist", "Feuchtigkeit, Staub und Zeit zusammenkommen", "das Archiv selten betreten wird"], c: 1, d: 1 },
+    { cat: "Leicht", q: "Was macht Archivalien wirklich nervös?", a: ["Besuchergruppen", "Plötzliche Klimaschwankungen", "Leise Gespräche"], c: 1, d: 1 },
+    { cat: "Leicht", q: "Welche Aussage fasst Prävention am besten zusammen?", a: ["Risiken früh erkennen und Schäden vermeiden", "Schäden schnell reparieren", "Abwarten und reagieren"], c: 0, d: 1 },
+    { cat: "RescueKit", q: "Welche Aussage beschreibt den primären Zweck des RescueKits Wasser korrekt?", a: ["Es stellt grundlegendes Notfallmaterial für die Bergung und sachgerechte Verpackung bei Wasserschäden bereit", "Es dient der vollständigen Wiederherstellung wassergeschädigter Dokumente vor Ort", "Es ersetzt das Beiziehen spezialisierter Fachpersonen im Schadensfall"], c: 0, d: 2 },
+    { cat: "RescueKit", q: "Unter welcher Voraussetzung ist die Nutzung des Inventarisierungstools EIS kostenlos?", a: ["Bei einmaliger Nutzung im Schadensfall", "Wenn docusave mit der weiteren Bearbeitung des wassergeschädigten Materials beauftragt wird", "Für alle Institutionen unabhängig vom weiteren Vorgehen"], c: 1, d: 2 },
+    { cat: "RescueKit", q: "Welche Aussage zur Lagerung eines RescueKits ist korrekt?", a: ["Das Kit sollte zentral im Verwaltungsgebäude gelagert werden", "Es sollte in der Nähe des Archivs oder Depots an einem sicheren, rasch zugänglichen Ort aufbewahrt werden", "Das Kit darf aus Sicherheitsgründen nur extern gelagert werden"], c: 1, d: 3 },
+    { cat: "RescueKit", q: "Was ist das Ziel des Einführungsworkshops zum RescueKit Wasser?", a: ["Vermittlung restauratorischer Techniken", "Schulung zur baulichen Schadensanalyse", "Erlernen der korrekten Anwendung des Materials und des Inventarisierungstools"], c: 2, d: 3 },
+    { cat: "Notfallkonzept", q: "Welche der folgenden Organisationen sind keine Blaulichtorganisationen?", a: ["Polizei und Katastrophenschutz", "Feuerwehr und Rettungsdienst", "Blaues Kreuz und Schweizerischer Verband für Konservierung und Restaurierung SKR"], c: 2, d: 4 },
+    { cat: "Klima", q: "Welche Aussage ist korrekt?", a: ["Neubauten können unmittelbar nach Fertigstellung mit Archivgut bestückt werden", "Restfeuchte in Neubauten oder renovierten Altbauten kann das Risiko von Schimmelpilzbildung erhöhen", "Beton trocknet innerhalb weniger Wochen vollständig aus"], c: 1, d: 5 },
+    { cat: "Klima", q: "Welche Aussage beschreibt das Verhalten organischer Materialien korrekt?", a: ["Organische Materialien reagieren kaum auf Schwankungen der Luftfeuchtigkeit", "Nur Papier reagiert auf Feuchte; Leder und Holz nicht", "Hygroskopische Materialien stehen in direkter Wechselwirkung mit der Luftfeuchtigkeit und verändern Volumen und Gewicht"], c: 2, d: 10 },
+    { cat: "Klima", q: "Was ist der Taupunkt?", a: ["Die Temperatur, bei der Wasser gefriert", "Die Temperatur, bei der Luftfeuchtigkeit kondensiert", "Die optimale Lagertemperatur"], c: 1, d: 6 },
+    { cat: "Prävention", q: "Welches Risiko besteht bei schwankenden Temperaturen für gebundene Bücher?", a: ["Keine, Bücher sind robust", "Spannungen im Einband und Buchrücken", "Nur ästhetische Probleme"], c: 1, d: 6 },
+    { cat: "Schädlinge", q: "Welche Umgebungsbedingungen fördern einen Schädlingsbefall?", a: ["Kühle, trockene Räume", "Warme, feuchte Räume mit organischem Material", "Räume mit viel Tageslicht"], c: 1, d: 7 },
+    { cat: "Klima", q: "Was versteht man unter kontrollierter Lüftung?", a: ["Fenster regelmässig öffnen", "Gezielte Luftzufuhr basierend auf Innen- und Aussenklima", "Dauerbetrieb von Ventilatoren"], c: 1, d: 7 },
+    { cat: "Prävention", q: "Warum sollten Archive nicht im Keller liegen?", a: ["Zu dunkel für die Arbeit", "Erhöhtes Risiko für Wasserschäden und Feuchtigkeit", "Zu weit von Büros entfernt"], c: 1, d: 8 },
+    { cat: "Notfallkonzept", q: "Was ist die Goldene Regel bei Wasserschäden an Papier?", a: ["Sofort mit Föhn trocknen", "Innerhalb von 48 Stunden stabilisieren oder einfrieren", "Eine Woche abwarten ob es trocknet"], c: 1, d: 9 },
+    { cat: "Schädlinge", q: "Welche Massnahme ist bei Schädlingsbefall NICHT empfohlen?", a: ["Sofortige Quarantäne befallener Objekte", "Einsatz von Insektiziden direkt auf Archivalien", "Kontaktaufnahme mit Fachleuten"], c: 1, d: 9 },
+    { cat: "Klima", q: "Was bedeutet Pufferwirkung bei Archivkartons?", a: ["Sie schützen vor mechanischen Schäden", "Sie gleichen kurzfristige Klimaschwankungen aus", "Sie sind wasserdicht"], c: 1, d: 9 },
+    { cat: "Schädlinge", q: "Papierfischchen sind keine gern gesehenen Gäste in Archiven, Bibliotheken und Museen. Wie viele Eier legt ein Weibchen jährlich?", a: ["ca. 50 Eier", "ca. 100 Eier", "ca. 300 Eier"], c: 0, d: 10 },
+    { cat: "Klima", q: "Was ist das Hauptproblem bei der Lagerung von Filmmaterial?", a: ["Zu schwer für Regale", "Essigsyndrom durch chemischen Zerfall", "Braucht zu viel Platz"], c: 1, d: 10 }
+];
+
+// FRAGEN TAG 3 - 20 Fragen, Schwierigkeit 1-10
+const day3 = [
+    { cat: "Leicht", q: "Warum beeinflussen Museumsbesuchende das Raumklima?", a: ["Sie öffnen heimlich Fenster", "Sie geben Wärme und Feuchtigkeit ab", "Sie bringen eigenes Licht mit"], c: 1, d: 1 },
+    { cat: "Leicht", q: "Warum tickt die Uhr bei einem Wasserschaden?", a: ["Wegen der Versicherung", "Weil das Wasser von selbst wieder verschwindet", "Weil mit der Zeit zusätzliche Schäden entstehen können"], c: 2, d: 1 },
+    { cat: "Leicht", q: "Warum mögen Archive Überraschungen nicht?", a: ["Sie enden oft in Notfällen", "Sie sind schlecht dokumentierbar", "Sie stehen nicht im Kalender"], c: 0, d: 1 },
+    { cat: "Leicht", q: "Was ist im Falle eines Wasserschadens die schlechteste Strategie?", a: ["Ruhe bewahren", "Fachlich korrekt verpacken", "Wir schauen morgen mal"], c: 2, d: 1 },
+    { cat: "Prävention", q: "Welche Massnahme dient der Schädlingsprävention?", a: ["Offene Fenster für Frischluft", "Regelmässige Reinigung und Inspektion", "Erhöhung der Raumtemperatur"], c: 1, d: 4 },
+    { cat: "Notfallkonzept", q: "Was sollte ein Notfallplan enthalten?", a: ["Nur Telefonnummern", "Klare Handlungsanweisungen und Verantwortlichkeiten", "Ausschliesslich Versicherungsinformationen"], c: 1, d: 5 },
+    { cat: "Klima", q: "Warum ist eine stabile Luftfeuchtigkeit wichtig?", a: ["Wegen der Optik der Räume", "Um Materialspannungen und Schimmelbildung zu vermeiden", "Für das Wohlbefinden der Mitarbeiter"], c: 1, d: 5 },
+    { cat: "Klima", q: "Was bedeutet hygroskopisch im Archivkontext?", a: ["Materialien sind wasserdicht", "Materialien nehmen Feuchtigkeit aus der Luft auf", "Materialien sind feuerfest"], c: 1, d: 6 },
+    { cat: "Prävention", q: "Was ist bei der Lagerung von Archivalien zu beachten?", a: ["Direkter Bodenkontakt ist ideal", "Ausreichend Abstand zu Aussenwänden und Boden", "Möglichst dichte Packung spart Platz"], c: 1, d: 6 },
+    { cat: "Klima", q: "Welche Temperatur wird für Archivräume empfohlen?", a: ["Über 25°C für schnelles Trocknen", "Zwischen 16-20°C", "Unter 10°C für maximale Haltbarkeit"], c: 1, d: 7 },
+    { cat: "Klima", q: "Welcher Faktor ist für die Langzeitlagerung von Archivalien besonders kritisch?", a: ["Die Raumgrösse", "Konstante klimatische Bedingungen", "Die Anzahl der Regale"], c: 1, d: 7 },
+    { cat: "Prävention", q: "Was ist ein wichtiger Aspekt bei der Notfallvorsorge?", a: ["Spontane Reaktion im Ernstfall", "Regelmässige Schulung des Personals", "Ausschliesslich externe Hilfe"], c: 1, d: 8 },
+    { cat: "RescueKit", q: "Wann sollte der Inhalt eines RescueKits überprüft werden?", a: ["Nur nach einem Schadensfall", "Regelmässig, mindestens jährlich", "Nie, die Materialien sind unbegrenzt haltbar"], c: 1, d: 8 },
+    { cat: "Prävention", q: "Welcher Lux-Wert wird für lichtempfindliche Archivalien maximal empfohlen?", a: ["500 Lux", "50 Lux", "200 Lux"], c: 1, d: 9 },
+    { cat: "Prävention", q: "Welche relative Luftfeuchtigkeit gilt für Papierarchive als ideal?", a: ["70-80% rH", "45-55% rH", "30-35% rH"], c: 1, d: 9 },
+    { cat: "Schädlinge", q: "Papierfischchen sind keine gern gesehenen Gäste in Archiven, Bibliotheken und Museen. Wie lange dauert die Entwicklungszeit vom Ei bis zum geschlechtsreifen Tier?", a: ["ca. 2 Wochen", "ca. 1 Jahr", "ca. 1,5 bis 3 Jahre"], c: 2, d: 10 },
+    { cat: "Schädlinge", q: "Welches Verfahren wird zur schonenden Schädlingsbekämpfung eingesetzt?", a: ["Chemische Begasung", "Anoxie (Sauerstoffentzug)", "UV-Bestrahlung"], c: 1, d: 10 }
+];
+
+// GOOGLE SHEETS API
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxFbpeOrSuodLoLUdbvaybYqtE289ZGKQ0XeIAYSFHByx67vcXZLcPWvf4E8j4-fq_9/exec';
+let rangliste = [];
+
+// Rangliste laden
+async function loadRangliste() {
+    try {
+        const response = await fetch(SHEETS_URL);
+        const data = await response.json();
+        rangliste = data.sort((a, b) => b.punkte - a.punkte).slice(0, 10);
+        displayRangliste();
+    } catch (e) {
+        console.log('Rangliste laden fehlgeschlagen:', e);
+    }
+}
+
+// Ergebnis speichern
+async function saveResult() {
+    const maxPunkte = questions.length * 1000; // 1000 pro Frage maximal
+    const prozent = Math.round(score / maxPunkte * 100);
+    const dauerSekunden = Math.round((Date.now() - startTime) / 1000);
+    const minuten = Math.floor(dauerSekunden / 60);
+    const sekunden = dauerSekunden % 60;
+    const dauerText = minuten + ':' + (sekunden < 10 ? '0' : '') + sekunden;
+    
+    const data = {
+        vorname: document.getElementById('fname').value,
+        nachname: document.getElementById('lname').value,
+        email: document.getElementById('email').value,
+        tag: currentDay,
+        punkte: score,
+        maxPunkte: maxPunkte,
+        prozent: prozent,
+        dauer: dauerText
+    };
+    
+    try {
+        await fetch(SHEETS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        console.log('Ergebnis gespeichert');
+        loadRangliste();
+    } catch (e) {
+        console.log('Speichern fehlgeschlagen:', e);
+    }
+}
+
+// Rangliste anzeigen
+function displayRangliste() {
+    const div = document.getElementById('rangliste');
+    if (!div) return;
+    
+    if (rangliste.length === 0) {
+        div.innerHTML = '<p style="color:#666;">Noch keine Einträge</p>';
+        return;
+    }
+    
+    let html = '';
+    rangliste.forEach((r, i) => {
+        const rank = (i + 1) + '.';
+        const name = r.vorname + ' ' + (r.nachname ? r.nachname.charAt(0) + '.' : '');
+        html += `<div class="rang-item"><span class="rank">${rank}</span><span class="name">${name}</span><span class="points">${r.punkte}</span></div>`;
+    });
+    div.innerHTML = html;
+}
+
+// SPIELLOGIK
+let currentDay = 0;
+let questions = [];
+let qIndex = 0;
+let score = 0;
+let startTime = 0;
+let questionStartTime = 0;
+let timerInterval = null;
+const MAX_TIME = 45; // Sekunden bis 0 Punkte-Bonus
+
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - questionStartTime) / 1000);
+    const remaining = Math.max(0, MAX_TIME - elapsed);
+    
+    // Text aktualisieren
+    document.getElementById('timer-text').textContent = elapsed;
+    
+    // Ring aktualisieren (226 = Umfang des Kreises)
+    const progress = document.getElementById('timer-progress');
+    const offset = (elapsed / MAX_TIME) * 226;
+    progress.style.strokeDashoffset = Math.min(226, offset);
+    
+    // Farbe ändern basierend auf Zeit
+    progress.classList.remove('warning', 'danger');
+    if (elapsed >= 30) {
+        progress.classList.add('danger');
+    } else if (elapsed >= 15) {
+        progress.classList.add('warning');
+    }
+}
+
+function startTimer() {
+    // Reset
+    document.getElementById('timer-text').textContent = '0';
+    document.getElementById('timer-progress').style.strokeDashoffset = 0;
+    document.getElementById('timer-progress').classList.remove('warning', 'danger');
+    
+    // Interval starten
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 100);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function pickDay(day) {
+    currentDay = day;
+    document.getElementById('screen1').classList.add('hidden');
+    document.getElementById('screen2').classList.remove('hidden');
+}
+
+async function startQuiz() {
+    const fn = document.getElementById('fname').value.trim();
+    const ln = document.getElementById('lname').value.trim();
+    const em = document.getElementById('email').value.trim().toLowerCase();
+    
+    if (!fn || !ln || !em) {
+        document.getElementById('error').textContent = 'Bitte alle Felder ausfüllen';
+        document.getElementById('error').classList.remove('hidden');
+        return;
+    }
+    if (!em.includes('@')) {
+        document.getElementById('error').textContent = 'Bitte gültige E-Mail eingeben';
+        document.getElementById('error').classList.remove('hidden');
+        return;
+    }
+    
+    // E-Mail Überprüfung gegen bereits gespielte
+    document.getElementById('error').textContent = 'Überprüfe E-Mail...';
+    document.getElementById('error').classList.remove('hidden');
+    
+    try {
+        const response = await fetch(SHEETS_URL);
+        const data = await response.json();
+        const emailExists = data.some(r => r.email && r.email.toLowerCase() === em);
+        
+        if (emailExists) {
+            document.getElementById('error').textContent = 'Diese E-Mail hat bereits teilgenommen!';
+            return;
+        }
+    } catch (e) {
+        console.log('E-Mail Check fehlgeschlagen, fahre fort:', e);
+    }
+    
+    document.getElementById('error').classList.add('hidden');
+    
+    // Fragen laden
+    if (currentDay === 1) questions = [...day1];
+    else if (currentDay === 2) questions = [...day2];
+    else questions = [...day3];
+    
+    // Nach Schwierigkeit sortieren (einfach → schwer)
+    questions.sort((a, b) => a.d - b.d);
+    
+    document.getElementById('qtotal').textContent = questions.length;
+    qIndex = 0;
+    score = 0;
+    
+    document.getElementById('screen2').classList.add('hidden');
+    document.getElementById('screen3').classList.remove('hidden');
+    startTime = Date.now();
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[qIndex];
+    document.getElementById('cat').textContent = q.cat;
+    document.getElementById('questiontext').textContent = q.q;
+    document.getElementById('qnum').textContent = qIndex + 1;
+    document.getElementById('score').textContent = score;
+    document.getElementById('progressbar').style.width = (qIndex / questions.length * 100) + '%';
+    
+    const div = document.getElementById('answers');
+    div.innerHTML = '';
+    q.a.forEach((ans, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = ans;
+        btn.onclick = () => answer(i);
+        div.appendChild(btn);
+    });
+    
+    document.getElementById('feedback').classList.add('hidden');
+    
+    // Timer für diese Frage starten
+    questionStartTime = Date.now();
+    startTimer();
+}
+
+function answer(idx) {
+    stopTimer();
+    const q = questions[qIndex];
+    const btns = document.querySelectorAll('.answer-btn');
+    
+    // Zeit berechnen
+    const sekunden = Math.round((Date.now() - questionStartTime) / 1000);
+    
+    btns.forEach((btn, i) => {
+        btn.onclick = null;
+        if (i === q.c) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('wrong');
+    });
+    
+    const fb = document.getElementById('feedback');
+    const fbt = document.getElementById('feedbacktext');
+    
+    if (idx === q.c) {
+        // 1000 Punkte minus 20 pro Sekunde, minimum 0
+        const punkte = Math.max(0, 1000 - (sekunden * 20));
+        score += punkte;
+        fb.className = 'feedback correct';
+        fbt.textContent = 'Richtig. +' + punkte + ' Punkte (' + sekunden + ' Sek.)';
+    } else {
+        // Falsch = 0 Punkte
+        fb.className = 'feedback wrong';
+        fbt.textContent = 'Falsch. Richtige Antwort: ' + q.a[q.c];
+    }
+    
+    fb.classList.remove('hidden');
+    document.getElementById('score').textContent = score;
+}
+
+function nextQ() {
+    qIndex++;
+    if (qIndex >= questions.length) {
+        showResult();
+    } else {
+        showQuestion();
+    }
+}
+
+function showResult() {
+    document.getElementById('screen3').classList.add('hidden');
+    document.getElementById('screen4').classList.remove('hidden');
+    document.getElementById('finalscore').textContent = score + ' Punkte';
+    
+    const max = questions.length * 1000;
+    const pct = Math.round(score / max * 100);
+    
+    let msg;
+    if (pct >= 80) msg = 'Ausgezeichnet! Sie sind ein Archiv-Experte.';
+    else if (pct >= 60) msg = 'Sehr gut! Solides Fachwissen.';
+    else if (pct >= 40) msg = 'Gut gemacht. Noch Potenzial nach oben.';
+    else msg = 'Besuchen Sie unseren Stand für mehr Informationen.';
+    
+    document.getElementById('finalmsg').textContent = msg;
+    
+    // Ergebnis speichern
+    saveResult();
+}
+
+// Beim Laden Rangliste holen
+loadRangliste();
+</script>
+</body>
+</html>
