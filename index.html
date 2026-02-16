@@ -449,6 +449,7 @@
                 </div>
                 <div class="progress"><div class="progress-bar" id="progressbar"></div></div>
                 <div class="category" id="cat"></div>
+                <img class="question-img" id="question-img" style="display:none; max-width:100%; max-height:200px; margin-bottom:24px; border:1px solid #333;">
                 <div class="question" id="questiontext"></div>
                 <div id="answers"></div>
                 <div class="feedback hidden" id="feedback">
@@ -468,77 +469,49 @@
     </div>
 
 <script>
-// FRAGEN TAG 1 - 20 Fragen, Schwierigkeit 1-10
-const day1 = [
-    { cat: "Leicht", q: "Was mögen Archivalien in der Regel am liebsten?", a: ["Überraschungen", "Stabilität", "Häufige Abwechslung"], c: 1, d: 1 },
-    { cat: "Leicht", q: "Was ist der natürliche Feind jedes Archivs?", a: ["Kaffee", "Wasser", "Dunkelheit"], c: 1, d: 1 },
-    { cat: "Leicht", q: "Was ist das docusave RescueKit Wasser?", a: ["Ein Notfallpaket für Bergung und Verpackung bei Wasserschäden", "Ein digitales Archivsystem", "Ein Reparaturset für Bücher"], c: 0, d: 1 },
-    { cat: "RescueKit", q: "Welche Komponente ist Bestandteil des RescueKits Wasser?", a: ["Persönliche Schutzausrüstung", "Luftentfeuchter und Ventilatoren", "docusave Verpackungskisten bis max. DIN-A3-Format"], c: 2, d: 1 },
-    { cat: "RescueKit", q: "Warum ist die Einbettung des RescueKits Wasser in das docusave-Gesamtsystem präventiv und organisatorisch relevant?", a: ["Weil dadurch externe Dienstleister ausgeschlossen werden", "Weil ein strukturierter, reibungsloser Übergang von der Bergung in die Wiederherstellungsphase gewährleistet wird", "Weil dadurch keine weiteren Entscheidungen im Schadensfall nötig sind"], c: 1, d: 2 },
-    { cat: "RescueKit", q: "Für welchen Umfang ist der Inhalt eines RescueKits Wasser ausgelegt?", a: ["Für das Verpacken von bis zu 50 Laufmeter trockener oder wassergeschädigter Dokumente", "Für das Verpacken einzelner geschädigter Objekte", "Für den vollständigen Inhalt eines durchschnittlichen Archivraums"], c: 0, d: 2 },
-    { cat: "RescueKit", q: "Welcher Vorteil steht beim Einsatz des RescueKits Wasser im Ernstfall im Vordergrund?", a: ["Die vollständige Wiederherstellung des Bestandes ohne externe Unterstützung", "Die Reduktion administrativer Aufgaben nach Abschluss der Bergung", "Die sofortige Handlungsfähigkeit durch verfügbares, einsatzerprobtes Notfallmaterial"], c: 2, d: 3 },
-    { cat: "RescueKit", q: "Warum ist der rasche Zugriff auf das RescueKit Wasser im Schadensfall entscheidend?", a: ["Weil geeignete Materialien und Verpackungstechniken Folgeschäden bei Bergung und Transport reduzieren", "Weil nur in den ersten Stunden mikrobiologische Analysen möglich sind", "Weil das Verpackungsmaterial des RescueKits nur unmittelbar nach einem Wasserschaden einsetzbar ist"], c: 0, d: 3 },
-    { cat: "Notfallkonzept", q: "Welcher Bergungsgrundsatz ist korrekt?", a: ["Je mehr Personen an der Bergung beteiligt sind, desto schneller und sicherer kann das Material bewegt werden", "Je kürzer die Wege und je weniger Personen das Material in die Hand nehmen müssen, desto besser", "Längere Transportwege innerhalb des Gebäudes sind unproblematisch, solange das Material mehrfach umgepackt wird"], c: 1, d: 3 },
-    { cat: "Prävention", q: "Welche Aussage ist fachlich korrekt?", a: ["Raue Oberflächen in Archivräumen sind pflegeleichter als glatte", "Glatte Wände, Decken und Böden reduzieren Staubablagerungen und erleichtern die Reinigung", "Die Wahl der Oberflächenmaterialien beeinflusst primär die Raumästhetik und spielt für die Prävention eine untergeordnete Rolle"], c: 1, d: 4 },
-    { cat: "Klima", q: "Welche Aussage entspricht präventiven Empfehlungen?", a: ["Fenster verbessern die Klimastabilität durch natürliche Lüftung", "Räume ohne Fenster oder Lichtschächte sind aus konservatorischer Sicht zu bevorzugen", "Fenster sollten möglichst gross dimensioniert sein, um den Bedarf an künstlichen Lichtquellen zu reduzieren"], c: 1, d: 4 },
-    { cat: "Klima", q: "Welche Aussage zum Einsatz von Luftentfeuchtungsgeräten trifft zu?", a: ["Luftentfeuchter ersetzen eine systematische Klimaüberwachung", "Der Dauerbetrieb von Luftentfeuchtern ist immer konservatorisch optimal", "Luftentfeuchter können sinnvoll sein, um Spitzenwerte abzufedern, müssen aber regelmässig kontrolliert werden"], c: 2, d: 5 },
-    { cat: "Klima", q: "Welche Massnahme gilt als bevorzugt zur Klimastabilisierung?", a: ["Permanente technische Vollklimatisierung aller Archivräume", "Passive Klimasteuerung durch Temperieren und kontrollierte Lüftung", "Ausschliesslicher Einsatz mobiler Entfeuchtungsgeräte"], c: 1, d: 5 },
-    { cat: "RescueKit", q: "Welche Funktion erfüllt das Inventarisierungstool (EIS) im Kontext des RescueKits?", a: ["Es ermöglicht eine digitale Dokumentation des Bestandes während der Bergung", "Es dient ausschliesslich der späteren Restaurierungsplanung", "Es dient primär der Schadenserfassung"], c: 0, d: 5 },
-    { cat: "Klima", q: "Welche Aussage zur Klimaaufzeichnung ist korrekt?", a: ["Stichprobenartige Messungen reichen für eine Klimabeurteilung aus", "Klimadaten lassen sich ohne Erfahrung eindeutig interpretieren", "Nur eine permanente Klimaaufzeichnung macht Schwankungen nachvollziehbar und bewertbar"], c: 2, d: 6 },
-    { cat: "Klima", q: "Welche Aussage zum Klima in Ausstellungsräumen ist korrekt?", a: ["Das Innenklima von Ausstellungsräumen ist unabhängig vom Aussenklima", "Das Klima richtet sich ausschliesslich nach der technischen Ausstattung des Ausstellungsgebäudes", "Museumsbesuchende beeinflussen das Raumklima durch Körperwärme und personenbedingte Feuchtigkeitsabgabe"], c: 2, d: 7 },
-    { cat: "Klima", q: "Welche Aussage zur Lichteinwirkung auf Ausstellungsobjekte ist korrekt?", a: ["Direkte Lichteinstrahlung, insbesondere UV-Strahlung, ist möglichst zu vermeiden", "Kurzwellige Strahlung ist für Archiv- und Museumsobjekte unproblematisch", "Bei einer kurzen Ausstellungsdauer ist eine hohe Beleuchtungsstärke unproblematisch"], c: 0, d: 7 },
-    { cat: "Klima", q: "Welche Aussage zur Klimastabilität ist korrekt?", a: ["Kurzfristige Schwankungen sind unproblematisch, solange die Jahresmittelwerte stimmen", "Besonders Schwankungen in kurzen Zeitintervallen sind aus konservatorischer Sicht kritisch", "Häufige Klimawechsel fördern die Anpassungsfähigkeit der Materialien"], c: 1, d: 8 },
-    { cat: "Schädlinge", q: "Wofür steht IPM?", a: ["Integrated Pest Management", "Integrated Preservation Maintenance", "Integrated Preventive Maintenance"], c: 0, d: 9 },
-    { cat: "Klima", q: "Welche Aussage beschreibt das Verhalten anorganischer Materialien korrekt?", a: ["Schäden an Metall, z.B. an Metallgestellen, entstehen ausschliesslich durch direkte Wassereinwirkung", "Anorganische Materialien sind gegenüber klimatischen Schwankungen grundsätzlich unempfindlich", "Auch anorganische Materialien können bei ungünstiger oder zu hoher Luftfeuchtigkeit Schaden nehmen"], c: 2, d: 10 }
-];
+// FRAGEN werden aus Google Sheet geladen
+let day1 = [];
+let day2 = [];
+let day3 = [];
+let fragenGeladen = false;
 
-// FRAGEN TAG 2 - 20 Fragen, Schwierigkeit 1-10
-const day2 = [
-    { cat: "Leicht", q: "Schimmelpilz wächst besonders gern im Archiv, wenn...", a: ["es trocken, sauber und kühl ist", "Feuchtigkeit, Staub und Zeit zusammenkommen", "das Archiv selten betreten wird"], c: 1, d: 1 },
-    { cat: "Leicht", q: "Was macht Archivalien wirklich nervös?", a: ["Besuchergruppen", "Plötzliche Klimaschwankungen", "Leise Gespräche"], c: 1, d: 1 },
-    { cat: "Leicht", q: "Welche Aussage fasst Prävention am besten zusammen?", a: ["Risiken früh erkennen und Schäden vermeiden", "Schäden schnell reparieren", "Abwarten und reagieren"], c: 0, d: 1 },
-    { cat: "RescueKit", q: "Welche Aussage beschreibt den primären Zweck des RescueKits Wasser korrekt?", a: ["Es stellt grundlegendes Notfallmaterial für die Bergung und sachgerechte Verpackung bei Wasserschäden bereit", "Es dient der vollständigen Wiederherstellung wassergeschädigter Dokumente vor Ort", "Es ersetzt das Beiziehen spezialisierter Fachpersonen im Schadensfall"], c: 0, d: 2 },
-    { cat: "RescueKit", q: "Unter welcher Voraussetzung ist die Nutzung des Inventarisierungstools EIS kostenlos?", a: ["Bei einmaliger Nutzung im Schadensfall", "Wenn docusave mit der weiteren Bearbeitung des wassergeschädigten Materials beauftragt wird", "Für alle Institutionen unabhängig vom weiteren Vorgehen"], c: 1, d: 2 },
-    { cat: "RescueKit", q: "Welche Aussage zur Lagerung eines RescueKits ist korrekt?", a: ["Das Kit sollte zentral im Verwaltungsgebäude gelagert werden", "Es sollte in der Nähe des Archivs oder Depots an einem sicheren, rasch zugänglichen Ort aufbewahrt werden", "Das Kit darf aus Sicherheitsgründen nur extern gelagert werden"], c: 1, d: 3 },
-    { cat: "RescueKit", q: "Was ist das Ziel des Einführungsworkshops zum RescueKit Wasser?", a: ["Vermittlung restauratorischer Techniken", "Schulung zur baulichen Schadensanalyse", "Erlernen der korrekten Anwendung des Materials und des Inventarisierungstools"], c: 2, d: 3 },
-    { cat: "Notfallkonzept", q: "Welche der folgenden Organisationen sind keine Blaulichtorganisationen?", a: ["Polizei und Katastrophenschutz", "Feuerwehr und Rettungsdienst", "Blaues Kreuz und Schweizerischer Verband für Konservierung und Restaurierung SKR"], c: 2, d: 4 },
-    { cat: "Klima", q: "Welche Aussage ist korrekt?", a: ["Neubauten können unmittelbar nach Fertigstellung mit Archivgut bestückt werden", "Restfeuchte in Neubauten oder renovierten Altbauten kann das Risiko von Schimmelpilzbildung erhöhen", "Beton trocknet innerhalb weniger Wochen vollständig aus"], c: 1, d: 5 },
-    { cat: "Klima", q: "Welche Aussage beschreibt das Verhalten organischer Materialien korrekt?", a: ["Organische Materialien reagieren kaum auf Schwankungen der Luftfeuchtigkeit", "Nur Papier reagiert auf Feuchte; Leder und Holz nicht", "Hygroskopische Materialien stehen in direkter Wechselwirkung mit der Luftfeuchtigkeit und verändern Volumen und Gewicht"], c: 2, d: 10 },
-    { cat: "Klima", q: "Was ist der Taupunkt?", a: ["Die Temperatur, bei der Wasser gefriert", "Die Temperatur, bei der Luftfeuchtigkeit kondensiert", "Die optimale Lagertemperatur"], c: 1, d: 6 },
-    { cat: "Prävention", q: "Welches Risiko besteht bei schwankenden Temperaturen für gebundene Bücher?", a: ["Keine, Bücher sind robust", "Spannungen im Einband und Buchrücken", "Nur ästhetische Probleme"], c: 1, d: 6 },
-    { cat: "Schädlinge", q: "Welche Umgebungsbedingungen fördern einen Schädlingsbefall?", a: ["Kühle, trockene Räume", "Warme, feuchte Räume mit organischem Material", "Räume mit viel Tageslicht"], c: 1, d: 7 },
-    { cat: "Klima", q: "Was versteht man unter kontrollierter Lüftung?", a: ["Fenster regelmässig öffnen", "Gezielte Luftzufuhr basierend auf Innen- und Aussenklima", "Dauerbetrieb von Ventilatoren"], c: 1, d: 7 },
-    { cat: "Prävention", q: "Warum sollten Archive nicht im Keller liegen?", a: ["Zu dunkel für die Arbeit", "Erhöhtes Risiko für Wasserschäden und Feuchtigkeit", "Zu weit von Büros entfernt"], c: 1, d: 8 },
-    { cat: "Notfallkonzept", q: "Was ist die Goldene Regel bei Wasserschäden an Papier?", a: ["Sofort mit Föhn trocknen", "Innerhalb von 48 Stunden stabilisieren oder einfrieren", "Eine Woche abwarten ob es trocknet"], c: 1, d: 9 },
-    { cat: "Schädlinge", q: "Welche Massnahme ist bei Schädlingsbefall NICHT empfohlen?", a: ["Sofortige Quarantäne befallener Objekte", "Einsatz von Insektiziden direkt auf Archivalien", "Kontaktaufnahme mit Fachleuten"], c: 1, d: 9 },
-    { cat: "Klima", q: "Was bedeutet Pufferwirkung bei Archivkartons?", a: ["Sie schützen vor mechanischen Schäden", "Sie gleichen kurzfristige Klimaschwankungen aus", "Sie sind wasserdicht"], c: 1, d: 9 },
-    { cat: "Schädlinge", q: "Papierfischchen sind keine gern gesehenen Gäste in Archiven, Bibliotheken und Museen. Wie viele Eier legt ein Weibchen jährlich?", a: ["ca. 50 Eier", "ca. 100 Eier", "ca. 300 Eier"], c: 0, d: 10 },
-    { cat: "Klima", q: "Was ist das Hauptproblem bei der Lagerung von Filmmaterial?", a: ["Zu schwer für Regale", "Essigsyndrom durch chemischen Zerfall", "Braucht zu viel Platz"], c: 1, d: 10 }
-];
+// GOOGLE SHEETS API - EINE URL FÜR ALLES
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyp3VTv7eh0-psPcxzidl_vcicgKb8o5Y4RrpEH1UELIQNMYeAS8Zem9WrwxPfVy_VJmg/exec';
 
-// FRAGEN TAG 3 - 20 Fragen, Schwierigkeit 1-10
-const day3 = [
-    { cat: "Leicht", q: "Warum beeinflussen Museumsbesuchende das Raumklima?", a: ["Sie öffnen heimlich Fenster", "Sie geben Wärme und Feuchtigkeit ab", "Sie bringen eigenes Licht mit"], c: 1, d: 1 },
-    { cat: "Leicht", q: "Warum tickt die Uhr bei einem Wasserschaden?", a: ["Wegen der Versicherung", "Weil das Wasser von selbst wieder verschwindet", "Weil mit der Zeit zusätzliche Schäden entstehen können"], c: 2, d: 1 },
-    { cat: "Leicht", q: "Warum mögen Archive Überraschungen nicht?", a: ["Sie enden oft in Notfällen", "Sie sind schlecht dokumentierbar", "Sie stehen nicht im Kalender"], c: 0, d: 1 },
-    { cat: "Leicht", q: "Was ist im Falle eines Wasserschadens die schlechteste Strategie?", a: ["Ruhe bewahren", "Fachlich korrekt verpacken", "Wir schauen morgen mal"], c: 2, d: 1 },
-    { cat: "Prävention", q: "Welche Massnahme dient der Schädlingsprävention?", a: ["Offene Fenster für Frischluft", "Regelmässige Reinigung und Inspektion", "Erhöhung der Raumtemperatur"], c: 1, d: 4 },
-    { cat: "Notfallkonzept", q: "Was sollte ein Notfallplan enthalten?", a: ["Nur Telefonnummern", "Klare Handlungsanweisungen und Verantwortlichkeiten", "Ausschliesslich Versicherungsinformationen"], c: 1, d: 5 },
-    { cat: "Klima", q: "Warum ist eine stabile Luftfeuchtigkeit wichtig?", a: ["Wegen der Optik der Räume", "Um Materialspannungen und Schimmelbildung zu vermeiden", "Für das Wohlbefinden der Mitarbeiter"], c: 1, d: 5 },
-    { cat: "Klima", q: "Was bedeutet hygroskopisch im Archivkontext?", a: ["Materialien sind wasserdicht", "Materialien nehmen Feuchtigkeit aus der Luft auf", "Materialien sind feuerfest"], c: 1, d: 6 },
-    { cat: "Prävention", q: "Was ist bei der Lagerung von Archivalien zu beachten?", a: ["Direkter Bodenkontakt ist ideal", "Ausreichend Abstand zu Aussenwänden und Boden", "Möglichst dichte Packung spart Platz"], c: 1, d: 6 },
-    { cat: "Klima", q: "Welche Temperatur wird für Archivräume empfohlen?", a: ["Über 25°C für schnelles Trocknen", "Zwischen 16-20°C", "Unter 10°C für maximale Haltbarkeit"], c: 1, d: 7 },
-    { cat: "Klima", q: "Welcher Faktor ist für die Langzeitlagerung von Archivalien besonders kritisch?", a: ["Die Raumgrösse", "Konstante klimatische Bedingungen", "Die Anzahl der Regale"], c: 1, d: 7 },
-    { cat: "Prävention", q: "Was ist ein wichtiger Aspekt bei der Notfallvorsorge?", a: ["Spontane Reaktion im Ernstfall", "Regelmässige Schulung des Personals", "Ausschliesslich externe Hilfe"], c: 1, d: 8 },
-    { cat: "RescueKit", q: "Wann sollte der Inhalt eines RescueKits überprüft werden?", a: ["Nur nach einem Schadensfall", "Regelmässig, mindestens jährlich", "Nie, die Materialien sind unbegrenzt haltbar"], c: 1, d: 8 },
-    { cat: "Prävention", q: "Welcher Lux-Wert wird für lichtempfindliche Archivalien maximal empfohlen?", a: ["500 Lux", "50 Lux", "200 Lux"], c: 1, d: 9 },
-    { cat: "Prävention", q: "Welche relative Luftfeuchtigkeit gilt für Papierarchive als ideal?", a: ["70-80% rH", "45-55% rH", "30-35% rH"], c: 1, d: 9 },
-    { cat: "Schädlinge", q: "Papierfischchen sind keine gern gesehenen Gäste in Archiven, Bibliotheken und Museen. Wie lange dauert die Entwicklungszeit vom Ei bis zum geschlechtsreifen Tier?", a: ["ca. 2 Wochen", "ca. 1 Jahr", "ca. 1,5 bis 3 Jahre"], c: 2, d: 10 },
-    { cat: "Schädlinge", q: "Welches Verfahren wird zur schonenden Schädlingsbekämpfung eingesetzt?", a: ["Chemische Begasung", "Anoxie (Sauerstoffentzug)", "UV-Bestrahlung"], c: 1, d: 10 }
-];
+// Fragen aus Google Sheet laden
+async function loadFragen() {
+    try {
+        const response = await fetch(SHEETS_URL + '?action=fragen');
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        day1 = data.tag1 || [];
+        day2 = data.tag2 || [];
+        day3 = data.tag3 || [];
+        fragenGeladen = true;
+        console.log('Fragen geladen:', day1.length, day2.length, day3.length);
+        
+        // Tag-Buttons aktualisieren mit Anzahl Fragen
+        updateDayButtons();
+    } catch (e) {
+        console.error('Fragen laden fehlgeschlagen:', e);
+        document.getElementById('screen1').innerHTML = '<h2 style="color:#c8102e;">Fehler beim Laden der Fragen</h2><p>Bitte prüfen Sie die Google Sheet Verbindung.</p><p style="color:#666;">' + e.message + '</p>';
+    }
+}
 
-// GOOGLE SHEETS API
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxFbpeOrSuodLoLUdbvaybYqtE289ZGKQ0XeIAYSFHByx67vcXZLcPWvf4E8j4-fq_9/exec';
+function updateDayButtons() {
+    const btns = document.querySelectorAll('.day-btn small');
+    if (btns[0]) btns[0].textContent = day1.length + ' Fragen';
+    if (btns[1]) btns[1].textContent = day2.length + ' Fragen';
+    if (btns[2]) btns[2].textContent = day3.length + ' Fragen';
+}
+
+// Beim Start laden
+loadFragen();
+
 let rangliste = [];
 
 // Rangliste laden
@@ -721,6 +694,16 @@ function showQuestion() {
     document.getElementById('qnum').textContent = qIndex + 1;
     document.getElementById('score').textContent = score;
     document.getElementById('progressbar').style.width = (qIndex / questions.length * 100) + '%';
+    
+    // Bild anzeigen falls vorhanden
+    const img = document.getElementById('question-img');
+    if (q.img && q.img.length > 0) {
+        img.src = 'bilder/' + q.img;
+        img.style.display = 'block';
+        img.onerror = function() { this.style.display = 'none'; };
+    } else {
+        img.style.display = 'none';
+    }
     
     const div = document.getElementById('answers');
     div.innerHTML = '';
